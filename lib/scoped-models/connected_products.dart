@@ -77,22 +77,51 @@ class ProductsModel extends ConnectedProductsModel {
     return _products[selectedProductIndex];
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
       String title, String description, String image, double price) {
-    final Product updatedProduct = Product(
-        title: title,
-        description: description,
-        image: image,
-        price: price,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId);
-    _products[selectedProductIndex] = updatedProduct;
+    _isLoading = true;
     notifyListeners();
+    final Map<String, dynamic> updatetData = {
+      'title': title,
+      'description': description,
+      'image':
+          'http://as01.epimg.net/deporteyvida/imagenes/2018/05/07/portada/1525714597_852564_1525714718_noticia_normal.jpg',
+      'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id
+    };
+    return http
+        .put(
+            'https://flutter-products-59cc7.firebaseio.com/products/${selectedProduct.id}.json',
+            body: json.encode(updatetData))
+        .then((http.Response response) {
+      _isLoading = false;
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: title,
+          description: description,
+          image: image,
+          price: price,
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId);
+      _products[selectedProductIndex] = updatedProduct;
+      notifyListeners();
+    });
   }
 
   void deleteProduct() {
+    _isLoading = true;
+    final selectedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
     notifyListeners();
+    _selProductIndex = null;
+    http
+        .delete(
+            'https://flutter-products-59cc7.firebaseio.com/products/${selectedProductId}.json')
+        .then((http.Response response) {
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void fetchProducts() {

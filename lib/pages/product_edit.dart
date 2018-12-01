@@ -147,7 +147,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               _formData['image'], _formData['price'])
           .then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products')
+          Navigator.pushReplacementNamed(context, '/')
               .then((_) => setSelectProduct(null));
         } else {
           showDialog(
@@ -171,7 +171,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               _formData['image'], _formData['price'])
           .then((bool success) {
         if (success) {
-          Navigator.pushReplacementNamed(context, '/products')
+          Navigator.pushReplacementNamed(context, '/')
               .then((_) => setSelectProduct(null));
         } else {
           showDialog(
